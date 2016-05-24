@@ -1,0 +1,19 @@
+{
+  "name": "rest_concurrency",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "",
+    "start": "node server.js"
+  },
+  "author": "Women Who Code SF - Coding Kata",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WomenWhoCode/rest_concurrency.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
