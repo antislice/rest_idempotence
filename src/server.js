@@ -1,48 +1,54 @@
 var express = require("express");
 var bodyParser = require("body-parser")
 
+var Cart = require('./models/cart');
+
 var app = express();
 
 app.use(bodyParser.json());
 
-var carts = {};
-var nextCartId = 1;
-
 app.post('/carts', function(req, res) {
-  var cart = {
-    id: nextCartId++,
-    items: {}
-  }
-  carts[cart.id] = cart;
-  res.json(cart);
+  res.json(new Cart());
 });
 
 app.get('/carts/:cart_id', function(req, res) {
   var cartId = req.param('cart_id');
-  if (!(cartId in carts)) {
-    res.status(404).json(null);
+  var cart;
+  try {
+    cart = Cart.get(cartId);
+  }
+  catch (e) {
+    res.status(404).send('cart_id ' + cartId + ' not found');
     return;
   }
-  res.json(carts[cartId]);
+  res.json(cart);
 });
 
 app.post('/carts/:cart_id/items', function(req, res) {
   var cartId = req.param('cart_id');
-  if (!(cartId in carts)) {
-    res.status(404).json(null);
+  var cart;
+  try {
+    cart = Cart.get(cartId);
+  }
+  catch (e) {
+    res.status(404).send('cart_id ' + cartId + ' not found');
     return;
   }
-  var cart = carts[cartId];
   var productId = req.body.productId;
   var quantity = req.body.quantity;
-  if (productId in cart.items)
-    cart.items[productId] += quantity;
-  else
-    cart.items[productId] = quantity;
+  if (!productId) {
+    res.status(400).send('invalid body: productId');
+    return;
+  }
+  if (!quantity) {
+    res.status(400).send('invalid body: quantity');
+    return;
+  }
+  cart.addItems(productId, quantity);
   res.json(cart);
 });
 
-app.post('/carts/:cart_id/purchase', function(req, res) {
+app.post('/carts/:cart_id/purchases', function(req, res) {
   /* Fill in the blank! */
 });
 
