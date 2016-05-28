@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "",
-    "start": "node server.js"
+    "test": "mocha test/",
+    "start": "node src/server.js"
   },
   "author": "Women Who Code SF - Coding Kata",
   "repository": {
@@ -14,8 +14,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "mocha": "*",
+    "body-parser": "^1.15.1",
     "chai": "*",
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "mocha": "*"
   }
 }
