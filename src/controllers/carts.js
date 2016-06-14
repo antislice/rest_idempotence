@@ -5,7 +5,7 @@ exports.create = function(req, res) {
 };
 
 exports.read = function(req, res) {
-  var cartId = req.param('cart_id');
+  var cartId = req.params['cart_id'];
   var cart;
   try {
     cart = Cart.get(cartId);
@@ -18,7 +18,7 @@ exports.read = function(req, res) {
 };
 
 exports.createItems = function(req, res) {
-  var cartId = req.param('cart_id');
+  var cartId = req.params['cart_id'];
   var cart;
   try {
     cart = Cart.get(cartId);

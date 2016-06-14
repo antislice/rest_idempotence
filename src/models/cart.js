@@ -11,6 +11,8 @@ var Cart = function() {
 };
 
 Cart.get = function(cartId) {
+  if (!(cartId in carts))
+    throw new Error('cartId ' + cartId + ' does not exist');
   return carts[cartId];
 };
 
