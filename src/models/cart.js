@@ -10,6 +10,11 @@ var Cart = function() {
   return this;
 };
 
+Cart.deleteAll = function() {
+  carts = {};
+  nextCartId = 1;
+}
+
 Cart.get = function(cartId) {
   if (!(cartId in carts))
     throw new Error('cartId ' + cartId + ' does not exist');
