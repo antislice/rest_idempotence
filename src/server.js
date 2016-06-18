@@ -12,3 +12,6 @@ routes(app);
 app.listen(process.env.PORT, function() {
   console.log(`Server running at http://${process.env.IP}:${process.env.PORT}/`);
 });
+
+
+module.exports = exports = app;
