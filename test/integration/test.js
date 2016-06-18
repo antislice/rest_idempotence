@@ -23,8 +23,38 @@ describe('carts', function() {
       })
   });
   
-  it('should create a purchase');
+  it('should create a purchase', function(done) {
+    var s = chai.request(server);
+    s.post('/carts').end(function(err, res) {
+      should.not.exist(err);
+      res.body.id.should.equal(1);
+      s.post('/carts/1/items', {
+        'productId': 1,
+        'quantity': 5
+      }).end(function(err, res) {
+        s.post('/carts/1/purchases').end(function(err, res) {
+          res.should.have.status(200);
+          done(); 
+        });
+      });
+    });
+  });
   
-  it('should not create a second purchase');
+  it('should not create a second purchase', function(done) {
+    var s = chai.request(server);
+    s.post('/carts').end(function(err, res) {
+      s.post('/carts/1/items', {
+        'productId': 1,
+        'quantity': 5
+      }).end(function(err, res) {
+        s.post('/carts/1/purchases').end(function(err, res) {
+          s.post('/carts/1/purchases').end(function(err, res) {
+            res.should.have.status(400);
+            done();
+          })
+        });
+      });
+    });
+  });
   
 });

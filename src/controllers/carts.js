@@ -43,5 +43,5 @@ exports.createItems = function(req, res) {
 
 exports.createPurchase = function(req, res) {
   /* Fill in the blank! */
-  res.json(null);
+  res.status(500).json(null);
 };
