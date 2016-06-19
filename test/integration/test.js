@@ -18,42 +18,82 @@ describe('carts', function() {
     chai.request(server)
       .post('/carts')
       .end(function(err, res) {
+        should.not.exist(err);
         res.should.have.status(200);
+        res.body.id.should.equal(1);
         done();
       })
   });
   
-  it('should create a purchase', function(done) {
+  it('should update purchase', function(done) {
     var s = chai.request(server);
     s.post('/carts').end(function(err, res) {
       should.not.exist(err);
+      res.should.have.status(200);
       res.body.id.should.equal(1);
-      s.post('/carts/1/items', {
-        'productId': 1,
-        'quantity': 5
-      }).end(function(err, res) {
-        s.post('/carts/1/purchases').end(function(err, res) {
+      res.body.purchase.should.equal(false);
+      s.post('/carts/1/items')
+        .send({
+          'productId': 'abc',
+          'quantity': 5
+        })
+        .end(function(err, res) {
+          should.not.exist(err);
           res.should.have.status(200);
-          done(); 
+          res.body.id.should.equal(1);
+          res.body.items.should.deep.equal({
+            'abc': 5
+          });
+          res.body.purchase.should.equal(false);
+          s.put('/carts/1/purchase').end(function(err, res) {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.id.should.equal(1);
+            res.body.items.should.deep.equal({
+              'abc': 5
+            })
+            res.body.purchase.should.equal(true);
+            done(); 
+          });
         });
-      });
     });
   });
   
-  it('should not create a second purchase', function(done) {
+  it('should not update purchase twice', function(done) {
     var s = chai.request(server);
     s.post('/carts').end(function(err, res) {
-      s.post('/carts/1/items', {
-        'productId': 1,
-        'quantity': 5
-      }).end(function(err, res) {
-        s.post('/carts/1/purchases').end(function(err, res) {
-          s.post('/carts/1/purchases').end(function(err, res) {
-            res.should.have.status(400);
-            done();
-          })
+      should.not.exist(err);
+      res.should.have.status(200);
+      res.body.id.should.equal(1);
+      res.body.purchase.should.equal(false);
+      s.post('/carts/1/items')
+        .send({
+          'productId': 'abc',
+          'quantity': 5
+        })
+        .end(function(err, res) {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.id.should.equal(1);
+          res.body.items.should.deep.equal({
+            'abc': 5
+          });
+          res.body.purchase.should.equal(false);
+          s.put('/carts/1/purchase').end(function(err, res) {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.id.should.equal(1);
+            res.body.items.should.deep.equal({
+              'abc': 5
+            })
+            res.body.purchase.should.equal(true);
+            s.put('/carts/1/purchase').end(function(err, res) {
+              should.exist(err);
+              res.should.have.status(400);
+              done();
+            })
+          });
         });
-      });
     });
   });
   
