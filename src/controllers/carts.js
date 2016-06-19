@@ -1,47 +1,67 @@
 var Cart = require('../models/cart');
+var cartView = require('../views/cart');
+
+exports.param = function(req, res, next, cartId) {
+  try {
+    var cart = Cart.get(cartId);
+  }
+  catch (e) {
+    res.status(404).send('cart_id ' + cartId + ' not found');
+    return;
+  }
+  req.cart = cart;
+  next();
+}
 
 exports.create = function(req, res) {
-  res.json(new Cart());
+  var cart = new Cart();
+  res.set(cartView.header(cart));
+  res.send(cartView.body(cart));
 };
 
 exports.read = function(req, res) {
-  var cartId = req.params['cart_id'];
-  var cart;
-  try {
-    cart = Cart.get(cartId);
-  }
-  catch (e) {
-    res.status(404).send('cart_id ' + cartId + ' not found');
-    return;
-  }
-  res.json(cart);
+  res.set(cartView.header(req.cart));
+  res.send(cartView.body(req.cart));
 };
 
 exports.createItems = function(req, res) {
-  var cartId = req.params['cart_id'];
-  var cart;
-  try {
-    cart = Cart.get(cartId);
-  }
-  catch (e) {
-    res.status(404).send('cart_id ' + cartId + ' not found');
-    return;
-  }
   var productId = req.body.productId;
   var quantity = req.body.quantity;
   if (!productId) {
-    res.status(400).send('invalid body: productId');
+    res.status(400).send('invalid body: missing productId');
+    return;
+  }
+  if (typeof(productId) != 'string') {
+    res.status(400).send('invalid body: productId must be string');
     return;
   }
   if (!quantity) {
-    res.status(400).send('invalid body: quantity');
+    res.status(400).send('invalid body: missing quantity');
     return;
   }
-  cart.addItems(productId, quantity);
-  res.json(cart);
+  if (typeof(quantity) != 'number') {
+    res.status(400).send('invalid body: quantity must be number');
+    return;
+  }
+  req.cart.addItems(productId, quantity);
+  res.set(cartView.header(req.cart));
+  res.send(cartView.body(req.cart));
 };
 
-exports.createPurchase = function(req, res) {
-  /* Fill in the blank! */
-  res.status(500).json(null);
+exports.updateItems = function(req, res) {
+  try {
+    req.cart.setItems(req.body);
+  }
+  catch (e) {
+    res.status(400).send('invalid body: ' + e.message);
+    return;
+  }
+  res.set(cartView.header(req.cart));
+  res.send(cartView.body(req.cart));
+};
+
+exports.updatePurchase = function(req, res) {
+  req.cart.purchase = true;
+  res.set(cartView.header(req.cart));
+  res.send(cartView.body(req.cart));
 };

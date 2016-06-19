@@ -4,6 +4,7 @@ var nextCartId = 1;
 var Cart = function() {
   this.id = nextCartId++;
   this.items = {};
+  this.purchase = false;
 
   carts[this.id] = this;
 
@@ -28,6 +29,19 @@ addItems: function(productId, quantity) {
     this.items[productId] += quantity;
   else
     this.items[productId] = quantity;
+},
+
+setItems: function(items) {
+  if (typeof(items) != 'object')
+    throw new Error('items must be object');
+  for (var key in items) {
+    if (typeof(key) != 'string')
+      throw new Error('key (productId) must be string');
+    var value = items[key];
+    if (typeof(value) != 'number')
+      throw new Error('value (quantity) must be number');
+  }
+  this.items = items;
 }
 
 };
