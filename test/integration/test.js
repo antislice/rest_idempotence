@@ -20,27 +20,38 @@ describe('carts', function() {
       .end(function(err, res) {
         should.not.exist(err);
         res.should.have.status(200);
+        should.exist(res.header['items-etag']);
         res.body.id.should.equal(1);
         done();
       })
   });
   
   describe('items', function() {
+    
+    var etag;
 
     beforeEach(function(done) {
       var s = chai.request(server);
       s.post('/carts').end(function(err, res) {
         should.not.exist(err);
         res.should.have.status(200);
+        should.exist(res.header['items-etag']);
         res.body.id.should.equal(1);
         res.body.purchase.should.equal(false);
+        etag = res.header['items-etag'];
         done();
       });
+    });
+    
+    afterEach(function(done) {
+      etag = null;
+      done();
     });
 
     it('should create items', function(done) {
       var s = chai.request(server);
       s.post('/carts/1/items')
+        .set('If-Match', etag)
         .send({
           'productId': 'abc',
           'quantity': 5
@@ -48,11 +59,13 @@ describe('carts', function() {
         .end(function(err, res) {
           should.not.exist(err);
           res.should.have.status(200);
+          should.exist(res.header['etag']);
           res.body.id.should.equal(1);
           res.body.items.should.deep.equal({
             'abc': 5
           });
           res.body.purchase.should.equal(false);
+          etag = res.header['etag'];
           done();
         });
     });
@@ -60,6 +73,7 @@ describe('carts', function() {
     it('should create items cumulatively', function(done) {
       var s = chai.request(server);
       s.post('/carts/1/items')
+        .set('If-Match', etag)
         .send({
           'productId': 'abc',
           'quantity': 5
@@ -67,12 +81,15 @@ describe('carts', function() {
         .end(function(err, res) {
           should.not.exist(err);
           res.should.have.status(200);
+          should.exist(res.header['etag']);
           res.body.id.should.equal(1);
           res.body.items.should.deep.equal({
             'abc': 5
           });
           res.body.purchase.should.equal(false);
+          etag = res.header['etag'];
           s.post('/carts/1/items')
+            .set('If-Match', etag)
             .send({
               'productId': 'abc',
               'quantity': 5
@@ -80,6 +97,7 @@ describe('carts', function() {
             .end(function(err, res) {
               should.not.exist(err);
               res.should.have.status(200);
+              should.exist(res.header['etag'])
               res.body.id.should.equal(1);
               res.body.items.should.deep.equal({
                 'abc': 10
@@ -104,6 +122,8 @@ describe('carts', function() {
   
   describe('purchase', function () {
     
+    var purchase;
+    
     beforeEach(function(done) {
       var s = chai.request(server);
       s.post('/carts').end(function(err, res) {
@@ -124,9 +144,15 @@ describe('carts', function() {
               'abc': 5
             });
             res.body.purchase.should.equal(false);
+            purchase = res.body.purchase;
             done();
           });
       });
+    });
+    
+    afterEach(function(done) {
+      purchase = null;
+      done();
     });
     
     it('should update purchase', function(done) {
