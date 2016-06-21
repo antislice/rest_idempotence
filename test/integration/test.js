@@ -194,6 +194,7 @@ describe('carts', function() {
         res.should.have.status(200);
         res.body.id.should.equal(1);
         res.body.purchase.should.equal(false);
+        purchase = res.body.purchase;
         var etag = res.header['items-etag'];
         s.post('/carts/1/items')
           .set('If-Match', etag)
@@ -204,12 +205,9 @@ describe('carts', function() {
           .end(function(err, res) {
             should.not.exist(err);
             res.should.have.status(200);
-            res.body.id.should.equal(1);
-            res.body.items.should.deep.equal({
+            res.body.should.deep.equal({
               'abc': 5
             });
-            res.body.purchase.should.equal(false);
-            purchase = res.body.purchase;
             done();
           });
       });
