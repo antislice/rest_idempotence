@@ -60,11 +60,9 @@ describe('carts', function() {
           should.not.exist(err);
           res.should.have.status(200);
           should.exist(res.header['etag']);
-          res.body.id.should.equal(1);
-          res.body.items.should.deep.equal({
+          res.body.should.deep.equal({
             'abc': 5
           });
-          res.body.purchase.should.equal(false);
           etag = res.header['etag'];
           done();
         });
@@ -82,11 +80,9 @@ describe('carts', function() {
           should.not.exist(err);
           res.should.have.status(200);
           should.exist(res.header['etag']);
-          res.body.id.should.equal(1);
-          res.body.items.should.deep.equal({
+          res.body.should.deep.equal({
             'abc': 5
           });
-          res.body.purchase.should.equal(false);
           etag = res.header['etag'];
           s.post('/carts/1/items')
             .set('If-Match', etag)
@@ -98,11 +94,9 @@ describe('carts', function() {
               should.not.exist(err);
               res.should.have.status(200);
               should.exist(res.header['etag'])
-              res.body.id.should.equal(1);
-              res.body.items.should.deep.equal({
+              res.body.should.deep.equal({
                 'abc': 10
               });
-              res.body.purchase.should.equal(false);
               done();
             });
         });
@@ -149,12 +143,10 @@ describe('carts', function() {
           should.not.exist(err);
           res.should.have.status(200);
           should.exist(res.header['etag']);
-          res.body.id.should.equal(1);
-          res.body.items.should.deep.equal({
+          res.body.should.deep.equal({
             'abc': 5,
             'def': 3
           });
-          res.body.purchase.should.equal(false);
           etag = res.header['etag'];
           done();
         });
