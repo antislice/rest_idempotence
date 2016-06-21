@@ -194,7 +194,9 @@ describe('carts', function() {
         res.should.have.status(200);
         res.body.id.should.equal(1);
         res.body.purchase.should.equal(false);
+        var etag = res.header['items-etag'];
         s.post('/carts/1/items')
+          .set('If-Match', etag)
           .send({
             'productId': 'abc',
             'quantity': 5
