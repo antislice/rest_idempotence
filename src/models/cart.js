@@ -1,3 +1,5 @@
+var hash = require('object-hash');
+
 var carts = {};
 var nextCartId = 1;
 
@@ -42,6 +44,10 @@ setItems: function(items) {
       throw new Error('value (quantity) must be number');
   }
   this.items = items;
+},
+
+itemsHash: function() {
+  return hash(this.items);
 }
 
 };
