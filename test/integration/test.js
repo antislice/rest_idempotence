@@ -108,15 +108,86 @@ describe('carts', function() {
         });
     });
   
-    it('should not create items if etag missing');
+    it('should not create items if etag missing', function(done) {
+      var s = chai.request(server);
+      s.post('/carts/1/items')
+        .send({
+          'productId': 'abc',
+          'quantity': 5
+        })
+        .end(function(err, res) {
+          should.exist(err);
+          res.should.have.status(400);
+          done();
+        });
+    });
   
-    it('should not create items if etag none match');
+    it('should not create items if etag none match', function(done) {
+      var s = chai.request(server);
+      s.post('/carts/1/items')
+        .set('If-Match', 'foo')
+        .send({
+          'productId': 'abc',
+          'quantity': 5
+        })
+        .end(function(err, res) {
+          should.exist(err);
+          res.should.have.status(400);
+          done();
+        });
+    });
     
-    it('should update items');
+    it('should update items', function(done) {
+      var s = chai.request(server);
+      s.put('/carts/1/items')
+        .set('If-Match', etag)
+        .send({
+          'abc': 5,
+          'def': 3
+        })
+        .end(function(err, res) {
+          should.not.exist(err);
+          res.should.have.status(200);
+          should.exist(res.header['etag']);
+          res.body.id.should.equal(1);
+          res.body.items.should.deep.equal({
+            'abc': 5,
+            'def': 3
+          });
+          res.body.purchase.should.equal(false);
+          etag = res.header['etag'];
+          done();
+        });
+    });
     
-    it('should not update items if etag missing');
+    it('should not update items if etag missing', function(done) {
+      var s = chai.request(server);
+      s.put('/carts/1/items')
+        .send({
+          'abc': 5,
+          'def': 3
+        })
+        .end(function(err, res) {
+          should.exist(err);
+          res.should.have.status(400);
+          done();
+        });
+    });
     
-    it('should not update items if etag none match');
+    it('should not update items if etag none match', function(done) {
+      var s = chai.request(server);
+      s.put('/carts/1/items')
+        .set('If-Match', 'foo')
+        .send({
+          'abc': 5,
+          'def': 3
+        })
+        .end(function(err, res) {
+          should.exist(err);
+          res.should.have.status(400);
+          done();
+        });
+    });
 
   })
   
