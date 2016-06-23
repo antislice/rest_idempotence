@@ -45,6 +45,7 @@ exports.createItems = function(req, res) {
     return;
   }
   req.cart.addItems(productId, quantity);
+  res.status(201)
   res.set(cartView.header(req.cart));
   res.send(cartView.body(req.cart));
 };
