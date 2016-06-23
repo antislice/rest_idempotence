@@ -15,6 +15,7 @@ exports.param = function(req, res, next, cartId) {
 
 exports.create = function(req, res) {
   var cart = new Cart();
+  res.status(201)
   res.set(cartView.header(cart));
   res.send(cartView.body(cart));
 };

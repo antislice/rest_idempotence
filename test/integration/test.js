@@ -19,7 +19,7 @@ describe('carts', function() {
       .post('/carts')
       .end(function(err, res) {
         should.not.exist(err);
-        res.should.have.status(200);
+        res.should.have.status(201);
         should.exist(res.header['items-etag']);
         res.body.id.should.equal(1);
         done();
@@ -34,7 +34,7 @@ describe('carts', function() {
       var s = chai.request(server);
       s.post('/carts').end(function(err, res) {
         should.not.exist(err);
-        res.should.have.status(200);
+        res.should.have.status(201);
         should.exist(res.header['items-etag']);
         res.body.id.should.equal(1);
         res.body.purchase.should.equal(false);
@@ -58,7 +58,7 @@ describe('carts', function() {
         })
         .end(function(err, res) {
           should.not.exist(err);
-          res.should.have.status(200);
+          res.should.have.status(201);
           should.exist(res.header['etag']);
           res.body.should.deep.equal({
             'abc': 5
@@ -78,7 +78,7 @@ describe('carts', function() {
         })
         .end(function(err, res) {
           should.not.exist(err);
-          res.should.have.status(200);
+          res.should.have.status(201);
           should.exist(res.header['etag']);
           res.body.should.deep.equal({
             'abc': 5
@@ -92,7 +92,7 @@ describe('carts', function() {
             })
             .end(function(err, res) {
               should.not.exist(err);
-              res.should.have.status(200);
+              res.should.have.status(201);
               should.exist(res.header['etag'])
               res.body.should.deep.equal({
                 'abc': 10
@@ -111,7 +111,7 @@ describe('carts', function() {
         })
         .end(function(err, res) {
           should.exist(err);
-          res.should.have.status(400);
+          res.should.have.status(428);
           done();
         });
     });
@@ -126,7 +126,7 @@ describe('carts', function() {
         })
         .end(function(err, res) {
           should.exist(err);
-          res.should.have.status(400);
+          res.should.have.status(412);
           done();
         });
     });
@@ -161,7 +161,7 @@ describe('carts', function() {
         })
         .end(function(err, res) {
           should.exist(err);
-          res.should.have.status(400);
+          res.should.have.status(428);
           done();
         });
     });
@@ -176,7 +176,7 @@ describe('carts', function() {
         })
         .end(function(err, res) {
           should.exist(err);
-          res.should.have.status(400);
+          res.should.have.status(412);
           done();
         });
     });
@@ -191,7 +191,7 @@ describe('carts', function() {
       var s = chai.request(server);
       s.post('/carts').end(function(err, res) {
         should.not.exist(err);
-        res.should.have.status(200);
+        res.should.have.status(201);
         res.body.id.should.equal(1);
         res.body.purchase.should.equal(false);
         purchase = res.body.purchase;
@@ -204,7 +204,7 @@ describe('carts', function() {
           })
           .end(function(err, res) {
             should.not.exist(err);
-            res.should.have.status(200);
+            res.should.have.status(201);
             res.body.should.deep.equal({
               'abc': 5
             });
@@ -228,7 +228,7 @@ describe('carts', function() {
           'abc': 5
         })
         res.body.purchase.should.equal(true);
-        done(); 
+        done();
       });
     });
     
@@ -244,7 +244,7 @@ describe('carts', function() {
         res.body.purchase.should.equal(true);
         s.put('/carts/1/purchase').end(function(err, res) {
           should.exist(err);
-          res.should.have.status(400);
+          res.should.have.status(409);
           done();
         })
       });
