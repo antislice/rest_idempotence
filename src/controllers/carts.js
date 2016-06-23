@@ -28,11 +28,11 @@ exports.read = function(req, res) {
 var compareAndExecute = function(req, res, next) {
   var itemsEtag = req.headers['if-match'];
   if (!itemsEtag) {
-    res.status(400).send('invalid header: missing Items-ETag');
+    res.status(428).send('invalid header: missing Items-ETag');
     return;
   }
   if (req.cart.itemsHash() != itemsEtag) {
-    res.status(400).send('invalid header: non matching Items-ETag');
+    res.status(412).send('invalid header: non matching Items-ETag');
     return;
   }
   next(req, res);
