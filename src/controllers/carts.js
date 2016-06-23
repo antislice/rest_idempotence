@@ -59,6 +59,7 @@ exports.createItems = function(req, res) {
       return;
     }
     req.cart.addItems(productId, quantity);
+    res.status(201)
     res.set(cartView.itemsHeader(req.cart));
     res.send(cartView.itemsBody(req.cart));
   });
@@ -80,7 +81,7 @@ exports.updateItems = function(req, res) {
 
 exports.updatePurchase = function(req, res) {
   if (req.cart.purchase) {
-    res.status(400).send('invalid request: purchase already true');
+    res.status(409).send('invalid request: purchase already true');
     return;
   }
   req.cart.purchase = true;
