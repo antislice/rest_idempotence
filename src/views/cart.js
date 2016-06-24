@@ -1,6 +1,9 @@
+var hash = require('object-hash');
+
 exports.header = function(cart) {
   return {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'items-etag': hash(cart)
   };
 };
 

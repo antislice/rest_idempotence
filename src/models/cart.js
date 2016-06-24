@@ -14,7 +14,7 @@ var Cart = function() {
 Cart.deleteAll = function() {
   carts = {};
   nextCartId = 1;
-}
+};
 
 Cart.get = function(cartId) {
   if (!(cartId in carts))

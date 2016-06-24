@@ -23,7 +23,7 @@ describe('carts', function() {
         should.exist(res.header['items-etag']);
         res.body.id.should.equal(1);
         done();
-      })
+      });
   });
   
   describe('items', function() {
