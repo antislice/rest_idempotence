@@ -28,6 +28,10 @@ exports.read = function(req, res) {
 exports.createItems = function(req, res) {
   var productId = req.body.productId;
   var quantity = req.body.quantity;
+  if (!req.header['items-etag']) {
+    res.status(428).send('lol no etag');
+    return;
+  }
   if (!productId) {
     res.status(400).send('invalid body: missing productId');
     return;
@@ -47,7 +51,7 @@ exports.createItems = function(req, res) {
   req.cart.addItems(productId, quantity);
   res.status(201);
   res.set(cartView.header(req.cart));
-  res.send(cartView.body(req.cart));
+  res.send(cartView.body(req.cart.items));
 };
 
 exports.updateItems = function(req, res) {
